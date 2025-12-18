@@ -1,0 +1,11 @@
+# Archivos compilados de Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Directorios de compilación
+target/
+build/
+out/
+bin/
