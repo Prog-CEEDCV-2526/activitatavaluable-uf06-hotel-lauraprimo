@@ -103,7 +103,7 @@ public class App {
         System.out.println("3. Consultar disponibilitat");
         System.out.println("4. Llistar reserves per tipus");
         System.out.println("5. Obtindre una reserva");
-        System.out.println("6. Ixir");
+        System.out.println("6. Eixir");
     }
 
     /**
