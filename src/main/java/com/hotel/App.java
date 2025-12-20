@@ -139,7 +139,9 @@ public class App {
      */
     public static void reservarHabitacio() {
         System.out.println("\n===== RESERVAR HABITACIÓ =====");
-        // TODO:
+        String resultat = seleccionarTipusHabitacioDisponible();
+        
+        System.out.println(resultat);//
 
     }
 
@@ -148,8 +150,33 @@ public class App {
      * retorna el nom del tipus.
      */
     public static String seleccionarTipusHabitacio() {
-        // TODO:
-        return null;
+        int resp = 0;
+        String tipus ="";
+         do {
+            System.out.print("Introdueix el tipus d'habitació que vols reservar: 1(Estándard), 2(Suite), 3(Deluxe): ");
+
+            if (sc.hasNextInt()) {
+                resp = sc.nextInt();
+
+                switch (resp) {
+                    case 1:
+                        tipus = "Estàndard";
+                        break;
+                    case 2:
+                        tipus = "Suite";
+                        break;
+                    case 3:
+                        tipus = "Deluxe";
+                        break;
+                    default:
+
+                }
+            } else {
+                System.out.println("Entrada no vàlida. S'ha d'indicar un nombre entre 1 i 3, ambdos inclosos.");
+                sc.next();
+            }
+        } while (resp < 1 || resp > 3);
+        return tipus;
     }
 
     /**
@@ -159,8 +186,26 @@ public class App {
      */
     public static String seleccionarTipusHabitacioDisponible() {
         System.out.println("\nTipus d'habitació disponibles:");
-        // TODO:
-        return null;
+        System.out.println("\n Tipus d'habitacions disponibles: ");
+        System.out.println(
+                "\n 1. Estàndard (" + disponibilitatHabitacions.get("Estàndard") + " disponibles) - "
+                        + preusHabitacions.get(TIPUS_ESTANDARD) + " € per nit."
+                        + "\n 2. Suite (" + disponibilitatHabitacions.get("Suite") + " disponibles) -"
+                        + preusHabitacions.get(TIPUS_SUITE) + " € per nit."
+                        + "\n 3. Deluxe (" + disponibilitatHabitacions.get("Deluxe") + " disponibles) - "
+                        + preusHabitacions.get(TIPUS_DELUXE) + " € per nit.");
+
+        String tipusHabitTriada = seleccionarTipusHabitacio(); //tipus
+        //Comprovem que hi haja habitacions lliures del tipus triat, 
+        //si hi ha retorna el tipus d'habitació escollit
+        //si no hi ha retorna null
+        if (disponibilitatHabitacions.get(tipusHabitTriada) > 0) {
+            return tipusHabitTriada;
+        } else {
+            return null;
+        }
+   
+         
     }
 
     /**
