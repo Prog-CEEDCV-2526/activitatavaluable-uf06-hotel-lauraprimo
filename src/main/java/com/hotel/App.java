@@ -31,6 +31,9 @@ public class App {
     // IVA
     public static final float IVA = 0.21f;
 
+    // Codis generats aleatoriament, corresponen a cada reserva feta
+    public static int codisReserva[] = new int[900];
+
     // Scanner únic
     public static Scanner sc = new Scanner(System.in);
 
@@ -168,14 +171,14 @@ public class App {
             }
             // suma entre serveis triats i preu de l'habitació escollida
             subtotal = subtotalServeis + preuHabitacio;
-           
+
             System.out.println("Subtotal: " + subtotal + " €");
 
             System.out.printf("IVA (21%%): %.2f\n", subtotal * IVA);
 
             preuTotalReserva = calcularPreuTotal(tipusHabitacio, serveisTriats);
 
-            System.out.printf("TOTAL: %.2f €\n", preuTotalReserva );
+            System.out.printf("TOTAL: %.2f €\n", preuTotalReserva);
 
             System.out.println("Reserva creada amb èxit!");
 
@@ -373,7 +376,7 @@ public class App {
     public static int generarCodiReserva() {
         int codiAleatori = 0;
         boolean esTroba = false;
-        int codisReserva[] = new int[900];
+
         do {
             codiAleatori = (int) (Math.random() * 900 + 100);// Genera un codi aleatori entre 100 y 999
 
@@ -409,7 +412,7 @@ public class App {
         System.out.println("\n===== ALLIBERAR HABITACIÓ =====");
         // Demanar codi, tornar habitació i eliminar reserva
 
-         int resp = llegirEnter(" Introdueix el codi de reserva: ");
+        int resp = llegirEnter(" Introdueix el codi de reserva: ");
 
         for (Integer codi : reserves.keySet()) {
             if (codi.equals(resp)) {
@@ -420,7 +423,7 @@ public class App {
                 reserves.remove(codi); // elimina l'entrada associada a este codi de reserva del hashmap reserves
 
                 // Recorrem el hashmap disponibilitatHabitacions amb un "foreach"
-                //per actualitzar la disponibilitat d'habitacions
+                // per actualitzar la disponibilitat d'habitacions
                 for (String tipo : disponibilitatHabitacions.keySet()) {
                     if (tipo == tipusH) {
                         disponibilitatHabitacions.put(tipo, disponibilitatHabitacions.get(tipo) + 1);
@@ -428,7 +431,7 @@ public class App {
                 }
 
                 System.out.println("Reserva alliberada correctament.");
-                
+
                 System.out.println("Disponibilitat actualitzada.");
                 break; // eixir del bucle for
 
@@ -443,13 +446,13 @@ public class App {
      * Mostra la disponibilitat actual de les habitacions (lliures i ocupades).
      */
     public static void consultarDisponibilitat() {
-           System.out.println("\n===== DISPONIBILITAT D'HABITACIONS =====");
-           System.out.println("Tipus\t\t" + "Lliures\t\t"+ "Ocupades");
-            for(String tipo : preusHabitacions.keySet()) {
-                mostrarDisponibilitatTipus(tipo);            
-            }
+        System.out.println("\n===== DISPONIBILITAT D'HABITACIONS =====");
+        System.out.printf("%3s %15s %15s \n", "Tipus", "Lliures", "Ocupades");
 
-            
+        for (String tipo : preusHabitacions.keySet()) {
+            mostrarDisponibilitatTipus(tipo);
+        }
+
     }
 
     /**
@@ -457,15 +460,66 @@ public class App {
      * associades a un tipus d'habitació.
      */
     public static void llistarReservesPerTipus(int[] codis, String tipus) {
-        // TODO: Implementar recursivitat
+
+        boolean reservesTipus = true; // booleano per controlar quan ja no hi ha reserves del tipus Hab
+
+        // comprovar que codisReserva[0] != 0
+        if (codis[0] != 0 && reservesTipus == true) {
+
+            // Busca reserves associades a la clau continguda en codis[0]
+            ArrayList<String> dades = reserves.get(codis[0]);
+
+            // comprovem el primer element de l'array siga igual que tipus Hab
+            // i fem una crida a mostrarDadesReserva() amb el primer codi de reserva no 0
+            if (dades.get(0).equals(tipus)) {
+                mostrarDadesReserva(codis[0]);
+            } else {
+                reservesTipus = false;
+                
+            }
+ 
+            // bloc de codi que s'executarà fins que el array codis tinga elements
+            if (codis.length > 0) {
+                // recortar el vector de codis
+                int newCodis[] = new int[codis.length - 1];
+
+                // copia del vector de codis anterior
+                System.arraycopy(codis, 1, newCodis, 0, newCodis.length);
+
+                // cridem al mètode de nou fins que array codis es buide
+                llistarReservesPerTipus(newCodis, tipus);
+            }
+        }else{
+            System.out.println("No hi ha més reserves d’aquest tipus.");
+        }
     }
 
     /**
      * Permet consultar els detalls d'una reserva introduint el codi.
      */
     public static void obtindreReserva() {
+        boolean continua = true;
         System.out.println("\n===== CONSULTAR RESERVA =====");
-        // TODO: Mostrar dades d'una reserva concreta
+        while (continua) {
+            int codi = llegirEnter("\nIntrodueix el codi de reserva: ");
+            if (codi == 0) {
+                System.out.println("Tornant al menú principal...");
+                continua = false;
+
+            } else {
+
+                mostrarDadesReserva(codi);       
+                System.out.print("\nVols consultar una altra reserva? (s/n): ");
+
+                String resposta = sc.next();
+                sc.nextLine(); // neteja buffer
+
+                if (resposta.equalsIgnoreCase("n")) {
+                    continua = false;
+                }
+            }
+
+        }
 
     }
 
@@ -475,14 +529,37 @@ public class App {
      */
     public static void obtindreReservaPerTipus() {
         System.out.println("\n===== CONSULTAR RESERVES PER TIPUS =====");
-        // TODO: Llistar reserves per tipus
+        String tipusHabitacio = seleccionarTipusHabitacio();
+  
+        llistarReservesPerTipus(codisReserva, tipusHabitacio);
     }
 
     /**
      * Consulta i mostra en detall la informació d'una reserva.
      */
     public static void mostrarDadesReserva(int codi) {
-        // TODO: Imprimir tota la informació d'una reserva
+
+        System.out.println("\nDades de la reserva: "+ codi);
+
+        // Comprovem que hi aparega en reserves el codi de reserva donat per l'usuari
+        if (reserves.containsKey(codi)) {
+            System.out.println("- Tipus d'habitació: " + reserves.get(codi).get(0));
+            System.out.println("- Preu total: " + reserves.get(codi).get(1) + " €");
+            System.out.println("- Serveis addicionals: ");
+
+            if (reserves.get(codi).size() > 2) {
+                for (int i = 2; i < reserves.get(codi).size(); i++) {
+                    System.out.println("    -> " + reserves.get(codi).get(i));
+                }
+            } else {
+                System.out.println("No s'han contractat serveis addicionals.");
+            }
+
+        } else {
+            System.out.println("No s'ha trobat cap reserva amb aquest codi.");
+           
+        }
+
     }
 
     // --------- MÈTODES AUXILIARS (PER MILLORAR LEGIBILITAT) ---------
