@@ -53,6 +53,7 @@ public class App {
      * fins que l'usuari decideix eixir.
      */
     public static void main(String[] args) {
+
         inicialitzarPreus();
 
         int opcio = 0;
@@ -164,39 +165,43 @@ public class App {
                 dadesReserva.add(ser);
 
             }
-            //suma entre serveis triats i preu de l'habitació escollida
+            // suma entre serveis triats i preu de l'habitació escollida
             subtotal = subtotalServeis + preuHabitacio;
             System.out.println("Subtotal: " + subtotal + " €");
-           
-            System.out.printf("IVA (21%%): %.2f\n",subtotal * IVA);
-            
+
+            System.out.printf("IVA (21%%): %.2f\n", subtotal * IVA);
 
             preuTotalReserva = calcularPreuTotal(tipusHabitacio, serveisTriats);
-            
-            System.out.printf("TOTAL: %.2f\n",preuTotalReserva);
-            
+
+            System.out.printf("TOTAL: %.2f €\n", preuTotalReserva );
+
             System.out.println("Reserva creada amb èxit!");
-            
+
             int codiRes = generarCodiReserva();
             System.out.println("Codi de reserva: " + codiRes);
 
+            // l'arraylist dadesReserva conté
+            // ("tipusHabitacio","preuTotalReserva","serve1","servei2")
 
-            //l'arraylist dadesReserva conté ("tipusHabitacio","preuTotalReserva","serve1","servei2")
+            // afegim al ArrayList dadesReserves les dades tpus i preu total reserva
+            dadesReserva.add(0, tipusHabitacio);
+            dadesReserva.add(1, Float.toString(preuTotalReserva));// convertir a String el float total
 
-            //afegim al ArrayList dadesReserves les dades tpus i preu total reserva
-            dadesReserva.add(0, tipusHabitacio); 
-            dadesReserva.add(1, Float.toString(preuTotalReserva));//convertir a String el float total
-
-            
-
-            //fem una copia de dadesReserva abans d'afegir-la al hasmap reserves
+            // fem una copia de dadesReserva abans d'afegir-la al hasmap reserves
             ArrayList<String> copiaDadesReserva = new ArrayList<>(dadesReserva);
 
-            //afegim les dades al hashmap reserves
+            // afegim les dades al hashmap reserves
             reserves.put(codiRes, copiaDadesReserva);
 
-            dadesReserva.clear();//netegem el arraylist per a la seguent reserva
+            dadesReserva.clear();// netegem el arraylist per a la seguent reserva
 
+            // Després de fer la reserva recorrem el hashmap disponibilitatHabitacions
+            // amb un "foreach" per actualitzar la disponibilitat d'habitacions
+            for (String tipo : disponibilitatHabitacions.keySet()) {
+                if (tipo.equals(tipusHabitacio)) {
+                    disponibilitatHabitacions.put(tipo, disponibilitatHabitacions.get(tipo) - 1);
+                }
+            }
 
         } else {
             System.out.println("No hi ha habitacions com les demanades pel client. Prova amb un altre tipus.");
@@ -352,11 +357,10 @@ public class App {
 
                 total += preusServeis.get(serveisSeleccionats.get(i));
 
-             
             }
         }
 
-        tot = total + total * IVA;//float IVA = 0.21f
+        tot = total + total * IVA;// float IVA = 0.21f
         return tot;
     }
 
@@ -401,7 +405,36 @@ public class App {
      */
     public static void alliberarHabitacio() {
         System.out.println("\n===== ALLIBERAR HABITACIÓ =====");
-        // TODO: Demanar codi, tornar habitació i eliminar reserva
+        // Demanar codi, tornar habitació i eliminar reserva
+
+         int resp = llegirEnter(" Introdueix el codi de reserva: ");
+
+        for (Integer codi : reserves.keySet()) {
+            if (codi.equals(resp)) {
+                System.out.println("Reserva trobada!");
+                // obtindre tipusHabitacio de la reserva a borrar
+                String tipusH = reserves.get(codi).get(0);
+
+                reserves.remove(codi); // elimina l'entrada associada a este codi de reserva del hashmap reserves
+
+                // Recorrem el hashmap disponibilitatHabitacions amb un "foreach"
+                //per actualitzar la disponibilitat d'habitacions
+                for (String tipo : disponibilitatHabitacions.keySet()) {
+                    if (tipo == tipusH) {
+                        disponibilitatHabitacions.put(tipo, disponibilitatHabitacions.get(tipo) + 1);
+                    }
+                }
+
+                System.out.println("Reserva alliberada correctament.");
+                
+                System.out.println("Disponibilitat actualitzada.");
+                break; // eixir del bucle for
+
+            } else {
+                System.out.println("La reserva no existeix.");
+            }
+        } // final del for each
+
     }
 
     /**
@@ -409,6 +442,7 @@ public class App {
      */
     public static void consultarDisponibilitat() {
         // TODO: Mostrar lliures i ocupades
+        
     }
 
     /**
