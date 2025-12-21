@@ -383,7 +383,6 @@ public class App {
 
             // busca si el codi creat en el array(int) de codis de reserva
             for (int codi : codisReserva) {
-
                 // si es troba un codi duplicat, actualiza esTroba a true per continuar generant
                 // codis
                 if (codi == codiAleatori) {
@@ -512,7 +511,7 @@ public class App {
             } else {
 
                 mostrarDadesReserva(codi);
-                //comprovar que hi ha entrada d'usuari
+                // comprovar que hi ha entrada d'usuari
                 if (sc.hasNext()) {
                     System.out.print("\nVols consultar una altra reserva? (s/n): ");
 
@@ -522,7 +521,7 @@ public class App {
                     if (resposta.equalsIgnoreCase("n")) {
                         continua = false;
                     }
-                }else{
+                } else {
                     continua = false;
                 }
             }
@@ -537,9 +536,33 @@ public class App {
      */
     public static void obtindreReservaPerTipus() {
         System.out.println("\n===== CONSULTAR RESERVES PER TIPUS =====");
-        String tipusHabitacio = seleccionarTipusHabitacio();
 
-        llistarReservesPerTipus(codisReserva, tipusHabitacio);
+        String tipusHabitacio = seleccionarTipusHabitacio();
+        if (tipusHabitacio == null) {
+            return;
+        }
+        int contador = 0;
+        // foreach per a filtrar els codis que están en reserves
+        for (int codi : codisReserva) {
+            if (reserves.containsKey(codi)) {
+                contador++;// conta les reserves q hi ha
+            }
+        }
+        // array d'enters amb codis vàlids
+        int codisValids[] = new int[contador]; // tindrà tants elements com reserves hi ha
+
+        int i = 0;
+        for (int codi : reserves.keySet()) {
+            codisValids[i++] = codi;
+        }
+        
+        // crida al mètode recursiu només si hi ha codis/reserves
+        if (codisValids.length == 0) {
+            System.out.println("No hi ha reserves d'aquest tipus.");
+        } else {
+            llistarReservesPerTipus(codisValids, tipusHabitacio);
+        }
+
     }
 
     /**
