@@ -376,10 +376,10 @@ public class App {
      */
     public static int generarCodiReserva() {
         int codiAleatori = 0;
-        boolean esTroba = false;
-
+        boolean esTroba;
         do {
             codiAleatori = (int) (Math.random() * 900 + 100);// Genera un codi aleatori entre 100 y 999
+            esTroba = false; //reiniciem a false en cada iteració del do-while
 
             // busca si el codi creat en el array(int) de codis de reserva
             for (int codi : codisReserva) {
@@ -391,7 +391,7 @@ public class App {
                     break;
                 }
             }
-        } while (esTroba);
+        } while (esTroba); //repetix sols si està duplicat
 
         // bucle for que recorre l'array per trobar la primera posició buida i guardar
         // el nou codi
@@ -476,9 +476,9 @@ public class App {
                 mostrarDadesReserva(codis[0]);
             } else {
                 reservesTipus = false;
-                
+
             }
- 
+
             // bloc de codi que s'executarà fins que el array codis tinga elements
             if (codis.length > 0) {
                 // recortar el vector de codis
@@ -490,7 +490,7 @@ public class App {
                 // cridem al mètode de nou fins que array codis es buide
                 llistarReservesPerTipus(newCodis, tipus);
             }
-        }else{
+        } else {
             System.out.println("No hi ha més reserves d’aquest tipus.");
         }
     }
@@ -509,7 +509,7 @@ public class App {
 
             } else {
 
-                mostrarDadesReserva(codi);       
+                mostrarDadesReserva(codi);
                 System.out.print("\nVols consultar una altra reserva? (s/n): ");
 
                 String resposta = sc.next();
@@ -531,7 +531,7 @@ public class App {
     public static void obtindreReservaPerTipus() {
         System.out.println("\n===== CONSULTAR RESERVES PER TIPUS =====");
         String tipusHabitacio = seleccionarTipusHabitacio();
-  
+
         llistarReservesPerTipus(codisReserva, tipusHabitacio);
     }
 
@@ -540,7 +540,7 @@ public class App {
      */
     public static void mostrarDadesReserva(int codi) {
 
-        System.out.println("\nDades de la reserva: "+ codi);
+        System.out.println("\nDades de la reserva: " + codi);
 
         // Comprovem que hi aparega en reserves el codi de reserva donat per l'usuari
         if (reserves.containsKey(codi)) {
@@ -558,7 +558,7 @@ public class App {
 
         } else {
             System.out.println("No s'ha trobat cap reserva amb aquest codi.");
-           
+
         }
 
     }
