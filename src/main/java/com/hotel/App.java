@@ -122,6 +122,7 @@ public class App {
                 break;
             case 3:
                 consultarDisponibilitat();
+                break;
             case 4:
                 obtindreReserva();
                 break;
@@ -441,8 +442,13 @@ public class App {
      * Mostra la disponibilitat actual de les habitacions (lliures i ocupades).
      */
     public static void consultarDisponibilitat() {
-        // TODO: Mostrar lliures i ocupades
-        
+           System.out.println("\n===== DISPONIBILITAT D'HABITACIONS =====");
+           System.out.println("Tipus\t\t" + "Lliures\t\t"+ "Ocupades");
+            for(String tipo : preusHabitacions.keySet()) {
+                mostrarDisponibilitatTipus(tipo);            
+            }
+
+            
     }
 
     /**
@@ -533,6 +539,6 @@ public class App {
             etiqueta = etiqueta + "\t"; // per a quadrar la taula
         }
 
-        System.out.println(etiqueta + "\t" + lliures + "\t" + ocupades);
+        System.out.println(etiqueta + "\t" + lliures + "\t\t" + ocupades);
     }
 }
