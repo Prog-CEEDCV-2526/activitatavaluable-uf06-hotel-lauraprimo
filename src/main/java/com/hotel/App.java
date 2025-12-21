@@ -109,7 +109,7 @@ public class App {
         System.out.println("3. Consultar disponibilitat");
         System.out.println("4. Obtindre una reserva");
         System.out.println("5. Llistar reserves per tipus");
-        System.out.println("6. Eixir");
+        System.out.println("6. Ixir");
     }
 
     /**
@@ -136,6 +136,7 @@ public class App {
                 System.out.println("Eixint del sistema de reserves.");
                 break;
             default:
+                System.out.println("Opció no vàlida");
                 break;
         }
     }
