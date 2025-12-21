@@ -379,7 +379,7 @@ public class App {
         boolean esTroba;
         do {
             codiAleatori = (int) (Math.random() * 900 + 100);// Genera un codi aleatori entre 100 y 999
-            esTroba = false; //reiniciem a false en cada iteració del do-while
+            esTroba = false; // reiniciem a false en cada iteració del do-while
 
             // busca si el codi creat en el array(int) de codis de reserva
             for (int codi : codisReserva) {
@@ -391,7 +391,7 @@ public class App {
                     break;
                 }
             }
-        } while (esTroba); //repetix sols si està duplicat
+        } while (esTroba); // repetix sols si està duplicat
 
         // bucle for que recorre l'array per trobar la primera posició buida i guardar
         // el nou codi
@@ -462,37 +462,38 @@ public class App {
      */
     public static void llistarReservesPerTipus(int[] codis, String tipus) {
 
-        boolean reservesTipus = true; // booleano per controlar quan ja no hi ha reserves del tipus Hab
+        // cas inicial : array buit o null
+        if (codis.length == 0 || codis == null) {
+            return;
+        }
 
         // comprovar que codisReserva[0] != 0
-        if (codis[0] != 0 && reservesTipus == true) {
+        if (codis[0] != 0) {
+            // existeix el codi passat entre les reserves guardades?
+            if (reserves.containsKey(codis[0])) {
+                // reserves associades a la clau continguda en codis[0]
+                ArrayList<String> dades = reserves.get(codis[0]);
 
-            // Busca reserves associades a la clau continguda en codis[0]
-            ArrayList<String> dades = reserves.get(codis[0]);
-
-            // comprovem el primer element de l'array siga igual que tipus Hab
-            // i fem una crida a mostrarDadesReserva() amb el primer codi de reserva no 0
-            if (dades.get(0).equals(tipus)) {
-                mostrarDadesReserva(codis[0]);
-            } else {
-                reservesTipus = false;
+                // comprovem el primer element de l'array siga igual que tipus Hab
+                // i fem una crida a mostrarDadesReserva() amb el primer codi de reserva no 0
+                if (dades.get(0).equals(tipus)) {
+                    mostrarDadesReserva(codis[0]);
+                }
 
             }
-
-            // bloc de codi que s'executarà fins que el array codis tinga elements
-            if (codis.length > 0) {
-                // recortar el vector de codis
-                int newCodis[] = new int[codis.length - 1];
-
-                // copia del vector de codis anterior
-                System.arraycopy(codis, 1, newCodis, 0, newCodis.length);
-
-                // cridem al mètode de nou fins que array codis es buide
-                llistarReservesPerTipus(newCodis, tipus);
-            }
-        } else {
-            System.out.println("No hi ha més reserves d’aquest tipus.");
         }
+        // bloc de codi que s'executarà fins que el array codis tinga elements
+        if (codis.length > 1) {
+            // recortar el vector de codis
+            int newCodis[] = new int[codis.length - 1];
+
+            // copia del vector de codis anterior
+            System.arraycopy(codis, 1, newCodis, 0, newCodis.length);
+
+            // cridem al mètode de nou fins que array codis es buide
+            llistarReservesPerTipus(newCodis, tipus);
+        }
+
     }
 
     /**
@@ -503,6 +504,7 @@ public class App {
         System.out.println("\n===== CONSULTAR RESERVA =====");
         while (continua) {
             int codi = llegirEnter("\nIntrodueix el codi de reserva: ");
+
             if (codi == 0) {
                 System.out.println("Tornant al menú principal...");
                 continua = false;
@@ -510,12 +512,17 @@ public class App {
             } else {
 
                 mostrarDadesReserva(codi);
-                System.out.print("\nVols consultar una altra reserva? (s/n): ");
+                //comprovar que hi ha entrada d'usuari
+                if (sc.hasNext()) {
+                    System.out.print("\nVols consultar una altra reserva? (s/n): ");
 
-                String resposta = sc.next();
-                sc.nextLine(); // neteja buffer
+                    String resposta = sc.next();
+                    sc.nextLine(); // neteja buffer
 
-                if (resposta.equalsIgnoreCase("n")) {
+                    if (resposta.equalsIgnoreCase("n")) {
+                        continua = false;
+                    }
+                }else{
                     continua = false;
                 }
             }
