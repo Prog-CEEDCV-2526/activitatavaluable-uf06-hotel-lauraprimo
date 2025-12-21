@@ -151,8 +151,7 @@ public class App {
 
         int numServeis = 0;
         float subtotalServeis = 0, subtotal = 0;
-        System.out.println(tipusHabitacio);//
-
+       
         if (tipusHabitacio != null) {
             serveisTriats = seleccionarServeis();
             float preuHabitacio = preusHabitacions.get(tipusHabitacio);
@@ -168,13 +167,14 @@ public class App {
             }
             // suma entre serveis triats i preu de l'habitació escollida
             subtotal = subtotalServeis + preuHabitacio;
-            System.out.println("Subtotal: " + subtotal + " €");
+
+            System.out.println("\nSubtotal: " + subtotal + " €");
 
             System.out.printf("IVA (21%%): %.2f\n", subtotal * IVA);
 
             preuTotalReserva = calcularPreuTotal(tipusHabitacio, serveisTriats);
 
-            System.out.printf("TOTAL: %.2f €\n", preuTotalReserva );
+            System.out.printf("TOTAL: %.2f €\n", preuTotalReserva);
 
             System.out.println("Reserva creada amb èxit!");
 
@@ -198,12 +198,17 @@ public class App {
 
             // Després de fer la reserva recorrem el hashmap disponibilitatHabitacions
             // amb un "foreach" per actualitzar la disponibilitat d'habitacions
-            for (String tipo : disponibilitatHabitacions.keySet()) {
+    /*        for (String tipo : disponibilitatHabitacions.keySet()) {
                 if (tipo.equals(tipusHabitacio)) {
                     disponibilitatHabitacions.put(tipo, disponibilitatHabitacions.get(tipo) - 1);
                 }
             }
-
+        */
+          // busquem en el hashmap disponibilitatHabitacions si està el tipusH
+            // per actualitzar la disponibilitat d'habitacions
+            if (disponibilitatHabitacions.containsKey(tipusHabitacio)) {
+                disponibilitatHabitacions.put(tipusHabitacio, disponibilitatHabitacions.get(tipusHabitacio) + 1);
+            }
         } else {
             System.out.println("No hi ha habitacions com les demanades pel client. Prova amb un altre tipus.");
             sc.next();
@@ -408,33 +413,29 @@ public class App {
         System.out.println("\n===== ALLIBERAR HABITACIÓ =====");
         // Demanar codi, tornar habitació i eliminar reserva
 
-         int resp = llegirEnter(" Introdueix el codi de reserva: ");
+        int resp = llegirEnter(" Introdueix el codi de reserva: ");
+        if (reserves.containsKey(resp)) {
 
-        for (Integer codi : reserves.keySet()) {
-            if (codi.equals(resp)) {
-                System.out.println("Reserva trobada!");
-                // obtindre tipusHabitacio de la reserva a borrar
-                String tipusH = reserves.get(codi).get(0);
+            System.out.println("Reserva trobada!");
+            // obtindre tipusHabitacio de la reserva a borrar
+            String tipusH = reserves.get(resp).get(0);
 
-                reserves.remove(codi); // elimina l'entrada associada a este codi de reserva del hashmap reserves
+            reserves.remove(resp); // elimina l'entrada associada a este codi de reserva del hashmap reserves
 
-                // Recorrem el hashmap disponibilitatHabitacions amb un "foreach"
-                //per actualitzar la disponibilitat d'habitacions
-                for (String tipo : disponibilitatHabitacions.keySet()) {
-                    if (tipo == tipusH) {
-                        disponibilitatHabitacions.put(tipo, disponibilitatHabitacions.get(tipo) + 1);
-                    }
-                }
-
-                System.out.println("Reserva alliberada correctament.");
-                
-                System.out.println("Disponibilitat actualitzada.");
-                break; // eixir del bucle for
-
-            } else {
-                System.out.println("La reserva no existeix.");
+            // busquem en el hashmap disponibilitatHabitacions si està el tipusH
+            // per actualitzar la disponibilitat d'habitacions
+            if (disponibilitatHabitacions.containsKey(tipusH)) {
+                disponibilitatHabitacions.put(tipusH, disponibilitatHabitacions.get(tipusH) + 1);
             }
-        } // final del for each
+
+            System.out.println("Reserva alliberada correctament.");
+
+            System.out.println("Disponibilitat actualitzada.");
+
+        } else {
+            System.out.println("La reserva no existeix.");
+        }
+        // } // final del for each
 
     }
 
@@ -442,13 +443,12 @@ public class App {
      * Mostra la disponibilitat actual de les habitacions (lliures i ocupades).
      */
     public static void consultarDisponibilitat() {
-           System.out.println("\n===== DISPONIBILITAT D'HABITACIONS =====");
-           System.out.println("Tipus\t\t" + "Lliures\t\t"+ "Ocupades");
-            for(String tipo : preusHabitacions.keySet()) {
-                mostrarDisponibilitatTipus(tipo);            
-            }
+        System.out.println("\n===== DISPONIBILITAT D'HABITACIONS =====");
+        System.out.println("Tipus\t\t" + "Lliures\t\t" + "Ocupades");
+        for (String tipo : preusHabitacions.keySet()) {
+            mostrarDisponibilitatTipus(tipo);
+        }
 
-            
     }
 
     /**
