@@ -59,6 +59,7 @@ public class App {
         do {
             mostrarMenu();
             opcio = llegirEnter("Seleccione una opció: ");
+
             gestionarOpcio(opcio);
         } while (opcio != 6);
 
@@ -140,6 +141,8 @@ public class App {
      */
     public static void reservarHabitacio() {
         ArrayList<String> serveisTriats = new ArrayList<>();
+        ArrayList<String> dadesReserva = new ArrayList<>();
+
         float preuTotalReserva = 0;
         System.out.println("\n===== RESERVAR HABITACIÓ =====");
         String tipusHabitacio = seleccionarTipusHabitacioDisponible();
@@ -158,6 +161,7 @@ public class App {
                 numServeis++;
                 System.out.println("\t" + numServeis + "." + ser + " (" + preusServeis.get(ser) + " €)");
                 subtotalServeis += preusServeis.get(ser);
+                dadesReserva.add(ser);
 
             }
             //suma entre serveis triats i preu de l'habitació escollida
@@ -176,6 +180,24 @@ public class App {
             int codiRes = generarCodiReserva();
             System.out.println("Codi de reserva: " + codiRes);
 
+
+            //l'arraylist dadesReserva conté ("tipusHabitacio","preuTotalReserva","serve1","servei2")
+
+            //afegim al ArrayList dadesReserves les dades tpus i preu total reserva
+            dadesReserva.add(0, tipusHabitacio); 
+            dadesReserva.add(1, Float.toString(preuTotalReserva));//convertir a String el float total
+
+            
+
+            //fem una copia de dadesReserva abans d'afegir-la al hasmap reserves
+            ArrayList<String> copiaDadesReserva = new ArrayList<>(dadesReserva);
+
+            //afegim les dades al hashmap reserves
+            reserves.put(codiRes, copiaDadesReserva);
+
+            dadesReserva.clear();//netegem el arraylist per a la seguent reserva
+
+
         } else {
             System.out.println("No hi ha habitacions com les demanades pel client. Prova amb un altre tipus.");
             sc.next();
@@ -191,7 +213,7 @@ public class App {
         int resp = 0;
         String tipus = "";
         do {
-            System.out.print("\nSeleccione tipus d’habitació:");
+            System.out.print("\nSeleccione tipus d’habitació: ");
 
             if (sc.hasNextInt()) {
                 resp = sc.nextInt();
@@ -268,7 +290,7 @@ public class App {
 
             if (resposta.equalsIgnoreCase("s")) {
 
-                resp = llegirEnter(" Seleccione servei:");
+                resp = llegirEnter(" Seleccione servei: ");
 
                 if (resp == 0) {
 
@@ -330,7 +352,7 @@ public class App {
 
                 total += preusServeis.get(serveisSeleccionats.get(i));
 
-                // dadesReserva.add(serveisSeleccionats.get(i));
+             
             }
         }
 
