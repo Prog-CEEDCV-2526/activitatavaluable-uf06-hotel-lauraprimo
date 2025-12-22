@@ -425,7 +425,7 @@ public class App {
                 // Recorrem el hashmap disponibilitatHabitacions amb un "foreach"
                 // per actualitzar la disponibilitat d'habitacions
                 for (String tipo : disponibilitatHabitacions.keySet()) {
-                    if (tipo == tipusH) {
+                    if (tipo.equals(tipusH)) {
                         disponibilitatHabitacions.put(tipo, disponibilitatHabitacions.get(tipo) + 1);
                     }
                 }
@@ -541,15 +541,9 @@ public class App {
         if (tipusHabitacio == null) {
             return;
         }
-        int contador = 0;
-        // foreach per a filtrar els codis que están en reserves
-        for (int codi : codisReserva) {
-            if (reserves.containsKey(codi)) {
-                contador++;// conta les reserves q hi ha
-            }
-        }
+        
         // array d'enters amb codis vàlids
-        int codisValids[] = new int[contador]; // tindrà tants elements com reserves hi ha
+        int codisValids[] = new int[reserves.size()]; // tindrà tants elements com reserves hi ha
 
         int i = 0;
         for (int codi : reserves.keySet()) {
